@@ -3,6 +3,8 @@
 A todo list app with a FastAPI backend and a React + TypeScript frontend —
 priorities, due dates, tags, search/filter/sort, live stats, and dark mode.
 
+![Checkpoint screenshot](docs/screenshots/app.png)
+
 ## Stack
 
 - **Backend:** FastAPI, SQLAlchemy 2.x, Pydantic v2, SQLite, pytest

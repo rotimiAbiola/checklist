@@ -10,7 +10,7 @@ Instructions for AI coding agents (and humans) working in this repository.
 - `backend/` — FastAPI + SQLAlchemy + SQLite REST API
 - `frontend/` — React 19 + TypeScript + Vite + Tailwind CSS + React Query
 
-See [README.md](README.md) for the feature list and screenshots-in-words. See
+See [README.md](README.md) for the feature list and a screenshot. See
 [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for a backlog of suggested enhancements.
 
 ## Architecture
