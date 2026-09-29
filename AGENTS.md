@@ -66,8 +66,12 @@ cd frontend && npm run dev   # http://localhost:5173, proxies API calls to :8000
 ```
 
 The frontend reads the API base URL from `VITE_API_URL` (defaults to
-`http://localhost:8000`). Backend CORS is preconfigured to allow
-`http://localhost:5173`.
+`http://localhost:8000`). Backend CORS origins come from `ALLOWED_ORIGINS`
+(comma-separated; defaults to the localhost dev origins).
+
+Alternatively, `docker compose up` runs both services with hot reload
+(bind-mounted source, same ports) — see `docker-compose.yml` and each
+service's `Dockerfile`.
 
 ## Testing — mandatory before considering any change done
 

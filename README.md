@@ -53,6 +53,19 @@ npm run dev
 Open http://localhost:5173. The frontend talks to the backend at
 `http://localhost:8000` by default (override with a `VITE_API_URL` env var).
 
+### Or with Docker Compose
+
+```bash
+docker compose up
+```
+
+This builds and starts both services with hot reload: the backend bind-mounts
+`backend/` and runs `uvicorn --reload`, the frontend bind-mounts `frontend/`
+and runs the Vite dev server. Same ports as running locally —
+http://localhost:5173 for the app, http://localhost:8000 for the API.
+`docker compose down` to stop. The frontend's `Dockerfile` also has a
+`production` stage (build → serve via nginx) for a non-dev image, if needed.
+
 ### Health checks
 
 - Backend: `GET /health` → `{"status": "ok"}`
@@ -105,10 +118,11 @@ conventions, and [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for what's next.
 ## Project layout
 
 ```
-backend/    FastAPI app, SQLAlchemy models, pytest suite
-frontend/   React app, components, React Query hooks, vitest suite
-render.yaml Render Blueprint for the backend (see Deployment)
-AGENTS.md   Architecture, setup, and testing reference for contributors/agents
-CLAUDE.md   Claude Code specific notes (points back to AGENTS.md)
-FEATURE_IDEAS.md   Suggested features not yet built
+backend/            FastAPI app, SQLAlchemy models, pytest suite, Dockerfile
+frontend/           React app, components, React Query hooks, vitest suite, Dockerfile
+docker-compose.yml  Local dev: both services with hot reload (see above)
+render.yaml         Render Blueprint for the backend (see Deployment)
+AGENTS.md           Architecture, setup, and testing reference for contributors/agents
+CLAUDE.md           Claude Code specific notes (points back to AGENTS.md)
+FEATURE_IDEAS.md    Suggested features not yet built
 ```
