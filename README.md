@@ -104,6 +104,26 @@ Two things worth knowing for a free-tier deploy:
   idling, or on redeploy) — fine for a short-lived trial, not for
   long-term data.
 
+### Alternative: self-hosted on a VM (Docker Compose + nginx)
+
+Both services run in production-mode containers behind a single host
+nginx, which reverse-proxies `/api` and `/health` to the backend and
+everything else to the frontend — same-origin, no CORS needed. See
+`docker-compose.prod.yml`, `deploy/nginx/checklist.conf`, and
+`deploy/deploy.sh`. On a fresh Ubuntu server with Docker + nginx installed
+(`deploy/user-data.sh` does this as EC2 user-data):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rotimiAbiola/checklist/main/deploy/deploy.sh | bash
+```
+
+This clones (or pulls) the repo, installs the nginx site, and runs
+`docker compose -f docker-compose.prod.yml up -d --build`. The backend's
+SQLite file lives in a named Docker volume (`backend-data`), so it survives
+container restarts and redeploys (unlike the free-tier path above) as long
+as the volume isn't removed. Re-run `deploy/deploy.sh` any time to pull the
+latest `main` and redeploy.
+
 ## Testing
 
 ```bash
@@ -120,11 +140,13 @@ conventions, and [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for what's next.
 ## Project layout
 
 ```
-backend/            FastAPI app, SQLAlchemy models, pytest suite, Dockerfile
-frontend/           React app, components, React Query hooks, vitest suite, Dockerfile
-docker-compose.yml  Local dev: both services with hot reload (see above)
-render.yaml         Render Blueprint for the backend (see Deployment)
-AGENTS.md           Architecture, setup, and testing reference for contributors/agents
-CLAUDE.md           Claude Code specific notes (points back to AGENTS.md)
-FEATURE_IDEAS.md    Suggested features not yet built
+backend/                 FastAPI app, SQLAlchemy models, pytest suite, Dockerfile
+frontend/                React app, components, React Query hooks, vitest suite, Dockerfile
+docker-compose.yml       Local dev: both services with hot reload (see above)
+docker-compose.prod.yml  Self-hosted VM: production images behind host nginx
+deploy/                  nginx site config, EC2 user-data, deploy/redeploy script
+render.yaml              Render Blueprint for the backend (see Deployment)
+AGENTS.md                Architecture, setup, and testing reference for contributors/agents
+CLAUDE.md                Claude Code specific notes (points back to AGENTS.md)
+FEATURE_IDEAS.md         Suggested features not yet built
 ```

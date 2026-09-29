@@ -11,7 +11,12 @@ EXPOSE 5173
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
 # Production: build static assets, then serve them with nginx.
+# VITE_API_URL defaults to "" so API calls are same-origin relative paths
+# (e.g. /api/todos) - the right choice when a reverse proxy in front of this
+# container also proxies /api and /health to the backend on the same domain.
 FROM base AS build
+ARG VITE_API_URL=""
+ENV VITE_API_URL=$VITE_API_URL
 COPY . .
 RUN npm run build
 

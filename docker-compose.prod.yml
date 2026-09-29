@@ -1,0 +1,32 @@
+# Production stack: built (not dev-mode) images, bound to localhost only.
+# A host-level nginx (see deploy/nginx/checklist.conf) reverse-proxies the
+# public domain to these two ports and terminates TLS.
+#
+# Usage: docker compose -f docker-compose.prod.yml up -d --build
+services:
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ALLOWED_ORIGINS: https://checklist.rtmdemos.name.ng
+      DATABASE_URL: sqlite:////app/data/todos.db
+    volumes:
+      - backend-data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+      args:
+        VITE_API_URL: ""
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  backend-data:
