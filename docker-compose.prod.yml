@@ -1,11 +1,3 @@
-# Production stack: built (not dev-mode) images, bound to localhost only.
-# A host-level nginx (see deploy/nginx/checklist.conf) reverse-proxies the
-# public domain to these two ports and terminates TLS.
-#
-# Reads ALLOWED_ORIGINS / VITE_API_URL / DATABASE_URL from a .env file in
-# this directory (see .env.example) - not committed, not hardcoded here.
-#
-# Usage: docker compose -f docker-compose.prod.yml up -d --build
 services:
   backend:
     build:
