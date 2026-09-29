@@ -8,6 +8,16 @@ apt-get upgrade -y
 
 apt-get install -y ca-certificates curl gnupg git
 
+# Small instances can OOM during the frontend's TypeScript/Vite build
+# without this - cheap insurance, no extra cost.
+if [ ! -f /swapfile ]; then
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo "/swapfile none swap sw 0 0" >> /etc/fstab
+fi
+
 # Docker's official apt repo (newer + more reliable than Ubuntu's docker.io)
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc

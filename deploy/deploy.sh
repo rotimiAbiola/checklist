@@ -14,6 +14,11 @@ fi
 
 cd "$REPO_DIR"
 
+if [ ! -f .env ]; then
+  echo "No .env found - creating one from .env.example with production defaults."
+  cp .env.example .env
+fi
+
 sudo cp deploy/nginx/checklist.conf /etc/nginx/sites-available/checklist.conf
 sudo ln -sf /etc/nginx/sites-available/checklist.conf /etc/nginx/sites-enabled/checklist.conf
 sudo rm -f /etc/nginx/sites-enabled/default

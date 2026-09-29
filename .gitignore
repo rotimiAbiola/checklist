@@ -7,6 +7,9 @@ __pycache__/
 htmlcov/
 *.db
 
+# Env files (see .env.example)
+.env
+
 # Editor / OS
 .DS_Store
 .vscode/*

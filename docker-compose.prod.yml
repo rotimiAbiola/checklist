@@ -2,6 +2,9 @@
 # A host-level nginx (see deploy/nginx/checklist.conf) reverse-proxies the
 # public domain to these two ports and terminates TLS.
 #
+# Reads ALLOWED_ORIGINS / VITE_API_URL / DATABASE_URL from a .env file in
+# this directory (see .env.example) - not committed, not hardcoded here.
+#
 # Usage: docker compose -f docker-compose.prod.yml up -d --build
 services:
   backend:
@@ -11,8 +14,8 @@ services:
     ports:
       - "127.0.0.1:8000:8000"
     environment:
-      ALLOWED_ORIGINS: https://checklist.rtmdemos.name.ng
-      DATABASE_URL: sqlite:////app/data/todos.db
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?set ALLOWED_ORIGINS in .env}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////app/data/todos.db}
     volumes:
       - backend-data:/app/data
 
@@ -21,7 +24,7 @@ services:
       context: ./frontend
       target: production
       args:
-        VITE_API_URL: ""
+        VITE_API_URL: ${VITE_API_URL:-}
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:80"

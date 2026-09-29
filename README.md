@@ -68,6 +68,10 @@ http://localhost:5173 for the app, http://localhost:8000 for the API.
 `docker compose down` to stop. The frontend's `Dockerfile` also has a
 `production` stage (build → serve via nginx) for a non-dev image, if needed.
 
+`ALLOWED_ORIGINS` / `VITE_API_URL` are read from a `.env` file in the repo
+root (see `.env.example`) — copy it to `.env` to override; both already
+default to the values above if `.env` doesn't exist.
+
 ### Health checks
 
 - Backend: `GET /health` → `{"status": "ok"}`
@@ -117,12 +121,14 @@ everything else to the frontend — same-origin, no CORS needed. See
 curl -fsSL https://raw.githubusercontent.com/rotimiAbiola/checklist/main/deploy/deploy.sh | bash
 ```
 
-This clones (or pulls) the repo, installs the nginx site, and runs
-`docker compose -f docker-compose.prod.yml up -d --build`. The backend's
-SQLite file lives in a named Docker volume (`backend-data`), so it survives
-container restarts and redeploys (unlike the free-tier path above) as long
-as the volume isn't removed. Re-run `deploy/deploy.sh` any time to pull the
-latest `main` and redeploy.
+This clones (or pulls) the repo, creates `.env` from `.env.example` on first
+run if one doesn't already exist (production values — same-origin
+`VITE_API_URL`, the real domain in `ALLOWED_ORIGINS`), installs the nginx
+site, and runs `docker compose -f docker-compose.prod.yml up -d --build`.
+The backend's SQLite file lives in a named Docker volume (`backend-data`),
+so it survives container restarts and redeploys (unlike the free-tier path
+above) as long as the volume isn't removed. Re-run `deploy/deploy.sh` any
+time to pull the latest `main` and redeploy.
 
 ## Testing
 
@@ -144,6 +150,7 @@ backend/                 FastAPI app, SQLAlchemy models, pytest suite, Dockerfil
 frontend/                React app, components, React Query hooks, vitest suite, Dockerfile
 docker-compose.yml       Local dev: both services with hot reload (see above)
 docker-compose.prod.yml  Self-hosted VM: production images behind host nginx
+.env.example             Template for ALLOWED_ORIGINS / VITE_API_URL / DATABASE_URL
 deploy/                  nginx site config, EC2 user-data, deploy/redeploy script
 render.yaml              Render Blueprint for the backend (see Deployment)
 AGENTS.md                Architecture, setup, and testing reference for contributors/agents
